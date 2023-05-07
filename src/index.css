@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+body {
+  font-family: "Lora";
+  list-style-type: none;
+}
+
+main {
+  margin-top: 150px;
+}
+
+.mainHome {
+  margin-top: 300px ;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+.ZoneContent {
+  display: flex;
+  flex-direction: column;
+
+}
+
+
+h1 {
+  text-align: center;
+  font-size: 40px;
+}
+ h2 {
+  text-align: center;
+ }
+
+
+.sectionButtonsSites {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+}
+.sectionButtonsSites p {
+  color: rgb(255, 255, 255);
+}
+
+.siteButton {
+  background: rgb(93, 206, 255);
+  border: unset;
+  box-shadow: 3px 3px 3px rgb(151, 151, 151);
+  overflow: hidden;
+  flex-wrap: wrap;
+  font-size: 18px;
+  font-weight: bold;
+  width: 500px;
+  height: 60px;
+  margin: 5px;
+  padding: 3px;
+  border-radius: 8px;
+  color: rgb(255, 255, 255);
+}
+.siteButton:active {
+  background: rgb(81, 164, 200);
+  
+}
+.siteButton:hover p {
+ color: rgb(0, 0, 0)
+}
+
+.CircularProgressbar {
+  height: 30px;
+  width: 30px;
+}

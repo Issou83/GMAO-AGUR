@@ -1,0 +1,50 @@
+header {
+  position: fixed;
+  width: 100%;
+  margin-top: 0;
+  top: 0;
+  box-shadow: 5px 8px 10px grey;
+  background: white;
+}
+
+.headerContent {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  height: 120px;
+}
+
+.logoAgur {
+  content: "";
+  position: absolute;
+  left: 5px;
+  width: auto;
+  margin-top: 5px;
+}
+
+nav {
+    top: 20%;
+    content: "";
+    position: absolute;
+    right: 25px;
+margin: 5px;
+}
+
+.titleHeader {
+  /* content: "";
+    position: absolute; */
+    display: flex;
+    align-items: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.titleHeader h1 {
+    font-size: 30px;
+    margin: 0;
+}
+
+.sousTitre {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
