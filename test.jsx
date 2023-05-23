@@ -1,80 +1,47 @@
-import React, { useState } from 'react';
-import RemainingTimeIndicator from '../RemainingTimeIndicator/RemainingTimeIndicator';
-import './index.css';
+import mongoose from 'mongoose';
+import moment from 'moment';
 
-const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHours }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedIntervention, setEditedIntervention] = useState(intervention);
+const InterventionSchema = new mongoose.Schema({
+  siteName: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  agent: {
+    type: String,
+    required: true,
+  },
+  hours: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
+  remainingHours: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
+  interventionType: {
+    type: String,
+    enum: ['planned', 'realized'],
+    default: 'planned',
+    required: false,
+  },
+});
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setEditedIntervention({ ...editedIntervention, [name]: value });
-  };
+InterventionSchema.pre('save', function(next) {
+  if (this.remainingHours <= 0) {
+    this.interventionType = 'realized';
+    this.date = moment().format();
+  }
+  next();
+});
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = async () => {
-    setIsEditing(false);
-    onEdit(editedIntervention._id, editedIntervention);
-  };
-
-  const remainingHours = intervention.hours - siteTotalHours;
-
-  const getTimeRemainingString = (remainingHours) => {
-    if (remainingHours < 168) {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 24).toFixed(0)} jours`;
-    } else if (remainingHours < 720) {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 168).toFixed(0)} semaines`;
-    } else {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 720).toFixed(0)} mois`;
-    }
-  };
-
-  return (
-    <div className='intervention'>
-      {isPlanned ? ("") : (<p>Date : {intervention.date}</p>)}
-      <p>Description : {intervention.description}</p>
-      <p>Agent : {intervention.agent}</p>
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            name="description"
-            value={editedIntervention.description}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="agent"
-            value={editedIntervention.agent}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="hours"
-            value={editedIntervention.hours}
-            onChange={handleChange}
-          />
-          <button onClick={handleSave}>Valider</button>
-        </>
-      ) : (
-        <>
-          {isPlanned && (
-            <>
-              <p>Heures prévues : {intervention.hours} heures</p>
-              <p>Heures restantes avant l'intervention : {remainingHours.toFixed(2)} heures</p>
-              <p>({getTimeRemainingString(remainingHours)})</p>
-              <RemainingTimeIndicator key={intervention._id} remainingHours={remainingHours} />
-            </>
-          )}
-          <button onClick={handleEdit}>Modifier</button>
-          <button onClick={() => onDelete(intervention._id)}>Supprimer</button>
-        </>
-      )}
-    </div>
-  );
-};
-
-export default Intervention;
+export default mongoose.model('Intervention', InterventionSchema);

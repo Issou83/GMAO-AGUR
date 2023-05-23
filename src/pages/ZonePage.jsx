@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SiteDetails from "../composants/SiteDetails/SiteDetails";
+import RemainingTimeIndicator from "../composants/RemainingTimeIndicator/RemainingTimeIndicator";
+
 
 function ZonePage() {
   const { zoneId } = useParams();
   const [sites, setSites] = useState([]);
   const [selectedSite, setSelectedSite] = useState(null);
+  const [interventions, setInterventions] = useState([]);
+  const [siteWithShortestIntervention, setSiteWithShortestIntervention] = useState(null);
 
   const generateJSONFromXLSX = async () => {
     const response = await fetch("/SMEP.xlsx");
@@ -44,13 +48,13 @@ function ZonePage() {
   const loadSites = async () => {
     const jsonData = await generateJSONFromXLSX();
     let sites = [];
-
+    
     if (zoneId === "production") {
       sites = jsonData.production;
     } else if (zoneId === "surpressions") {
       sites = jsonData.surpressions;
     }
-
+    
     // console.log(sites);
     return sites;
   };
@@ -64,9 +68,9 @@ function ZonePage() {
     loadAndSetSites();
   }, [zoneId]);
 
-  const handleSiteClick = (site) => {
-    setSelectedSite(site);
-  };
+  // const handleSiteClick = (site) => {
+  //   setSelectedSite(site);
+  // };
 
   const loadInterventions = async () => {
     const response = await fetch("http://localhost:5000/api/interventions");
@@ -74,16 +78,49 @@ function ZonePage() {
     return interventions;
   };
 
-  const [interventions, setInterventions] = useState([]);
+  // const [interventions, setInterventions] = useState([]);
+
+  const updateShortestInterventions = () => {
+    const shortestInterventions = {};
+    for (let intervention of interventions) {
+      if (intervention.interventionType !== 'planned') {
+        continue;
+      }
+      if (shortestInterventions[intervention.siteName] === undefined ||
+          intervention.remainingHours < shortestInterventions[intervention.siteName].remainingHours) {
+        shortestInterventions[intervention.siteName] = intervention;
+      }
+    }
+
+    let sitesWithShortestInterventions = sites.map(site => {
+      return {
+        ...site,
+        shortestIntervention: shortestInterventions[site.name]
+      };
+    });
+
+    setSites(sitesWithShortestInterventions);
+  };
+
 
   useEffect(() => {
     const loadAndSetInterventions = async () => {
       const loadedInterventions = await loadInterventions();
       setInterventions(loadedInterventions);
+
+      updateShortestInterventions();
     };
 
-    loadAndSetInterventions();
-  }, []);
+    if (sites.length > 0) {
+      loadAndSetInterventions();
+    }
+  }, [sites, interventions]);
+  
+
+  const handleSiteClick = (site) => {
+    setSelectedSite(site);
+    setSiteWithShortestIntervention(site.shortestIntervention);
+  };
 
   return (
     <main>
@@ -99,15 +136,24 @@ function ZonePage() {
                   className="siteButton"
                   onClick={() => handleSiteClick(site)}>
                   <p>{site.name}</p>
+                  {site.shortestIntervention && (
+                  <RemainingTimeIndicator
+                    remainingHours={site.shortestIntervention.remainingHours}
+                  />
+                )}
                 </button>
               </div>
             ))}
           </div>
         </div>
+        </div>
         {selectedSite && (
-          <SiteDetails site={selectedSite} interventions={interventions} />
+          <SiteDetails
+            site={selectedSite}
+            shortestIntervention={siteWithShortestIntervention}
+            interventions={interventions}
+          />
         )}
-      </div>
     </main>
   );
 }

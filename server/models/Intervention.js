@@ -1,14 +1,50 @@
 import mongoose from 'mongoose';
+import moment from 'moment';
 
-const interventionSchema = new mongoose.Schema({
-  siteName: { type: String, required: false },
-  date: { type: Date, required: false },
-  description: { type: String, required: true },
-  agent: { type: String, required: true },
-  hours: { type: Number, required: false },
-  interventionType: { type: String, required: false },
+const InterventionSchema = new mongoose.Schema({
+  siteName: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  agent: {
+    type: String,
+    required: true,
+  },
+  hours: {
+    type: Number,
+    default: 0,
+  },
+  siteTotalHours: {
+    type: Number,
+    default: 0,
+  },
+  remainingHours: {
+    type: Number,
+    // default: 0
+    required: false,
+  },
+  interventionType: {
+    type: String,
+    enum: ['planned', 'realized'],
+    default: 'planned',
+  },
 });
 
-const Intervention = mongoose.model('Intervention', interventionSchema);
+InterventionSchema.pre('save', function(next) {
+  this.remainingHours = this.hours - this.siteTotalHours;
+  if (this.remainingHours < 0) {
+    this.interventionType = 'realized';
+  }
+  next();
+});
 
+const Intervention = mongoose.model('Intervention', InterventionSchema);
 export default Intervention;

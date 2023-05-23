@@ -3,6 +3,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 const RemainingTimeIndicator = ({ remainingHours }) => {
+  // const [alarmeWeek, setAlarmeWeek] = (null)
   let percentage = 0;
   let color = 'red';
 
@@ -14,9 +15,15 @@ const RemainingTimeIndicator = ({ remainingHours }) => {
     color = 'orange';
   } else if (remainingHours >= 0) {
     percentage = 33;
-  }
-
+  } 
+//   useEffect(() => {
+//   if (remainingHours < 168) {
+//     setAlarmeWeek(true)
+//   }
+//   return setAlarmeWeek
+// })
   return (
+    <>
     <CircularProgressbar
       value={percentage}
     //   text={`${remainingHours}h`}
@@ -27,6 +34,8 @@ const RemainingTimeIndicator = ({ remainingHours }) => {
         trailColor: '#d6d6d6',
       })}
     />
+    {/* {alarmeWeek && (<p>Alarme</p>)} */}
+    </>
   );
 };
 

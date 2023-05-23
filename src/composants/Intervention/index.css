@@ -3,9 +3,28 @@ h3 {
 }
 
 .intervention {
-    
+    text-align: center;
     margin: 10px 0;
     padding: 5px;
     border: 3px solid  rgb(93, 206, 255);
     border-radius: 10px;
+}
+
+.supply {
+    text-align: center;
+    width: 70px;
+    
+    margin: 3px 0;
+    padding: 0;
+}
+
+.supply-BtnMonth, .supply-BtnWeek {
+margin: 0;
+width: 100%;
+border: none;
+background-color:rgb(93, 206, 255);
+}
+
+p {
+    margin: 0;
 }

@@ -5,6 +5,7 @@ import './index.css';
 const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHours }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIntervention, setEditedIntervention] = useState(intervention);
+  const [isPlannedState, setIsPlannedState] = useState(isPlanned);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,10 +23,15 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
 
   const handleTimeUpdate = async (hoursToAdd) => {
     const updatedHours = intervention.hours + hoursToAdd;
-    const updatedIntervention = { ...intervention, hours: updatedHours };
+    const updatedRemainingHours = updatedHours - siteTotalHours;
+    const updatedIntervention = { ...intervention, hours: updatedHours, remainingHours: updatedRemainingHours };
+    if (updatedRemainingHours <= 0) {
+      updatedIntervention.interventionType = 'realized';
+      setIsPlannedState(false); // Update state if intervention is realized
+    }
     onEdit(updatedIntervention._id, updatedIntervention);
   };
-
+  
   const remainingHours = intervention.hours - siteTotalHours;
 
   const getTimeRemainingString = (remainingHours) => {
@@ -38,11 +44,14 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
     }
   };
 
+
+  const frenchOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
   return (
-    <div className='intervention'>
-      {isPlanned ? ("") : (<p>Date : {intervention.date}</p>)}
-      <p>Description : {intervention.description}</p>
-      <p>Agent : {intervention.agent}</p>
+     <div className='intervention'>
+    {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
+    <p>Description : {intervention.description}</p>
+    <p>Agent : {intervention.agent}</p>
       {isEditing ? (
         <>
           <input
@@ -69,12 +78,20 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
         <>
           {isPlanned && (
             <>
-              <p>Heures prévues : {intervention.hours}</p>
+              <p>Heures prévues : {intervention.hours} heures</p>
               <p>Heures restantes avant l'intervention : {remainingHours.toFixed(2)} heures</p>
               <p>({getTimeRemainingString(remainingHours)})</p>
-              <RemainingTimeIndicator key={intervention._id} remainingHours={remainingHours} />
-              <button onClick={() => handleTimeUpdate(168)}>+ 1 semaine</button>
-              <button onClick={() => handleTimeUpdate(720)}>+ 1 mois</button>
+              <RemainingTimeIndicator key={intervention._id} remainingHours={remainingHours} /><br></br>
+              <div className='supply'>
+                <button className='supply-BtnWeek' onClick={() => handleTimeUpdate(168)}>+</button>
+                <p>Semaine</p>
+                <button className='supply-BtnWeek' onClick={() => handleTimeUpdate(-168)}>-</button>
+              </div>
+              <div className='supply'>
+                <button className='supply-BtnMonth' onClick={() => handleTimeUpdate(720)}>+</button>
+                <p>Mois</p>
+                <button className='supply-BtnMonth' onClick={() => handleTimeUpdate(-720)}>-</button>
+              </div>
             </>
           )}
           <button onClick={handleEdit}>Modifier</button>
