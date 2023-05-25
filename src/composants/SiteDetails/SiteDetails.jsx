@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Intervention from "../Intervention/Intervention";
+import Interventions from "../Interventions/Interventions";
 import InterventionForm from "../InterventionForm/InterventionForm";
 import RemainingTimeIndicator from "../RemainingTimeIndicator/RemainingTimeIndicator";
 
@@ -125,7 +125,7 @@ const SiteDetails = ({ site, shortestIntervention, interventions }) => {
             site={site}
           />
           {realizedInterventions.map((intervention) => (
-            <Intervention
+            <Interventions
               key={intervention._id}
               intervention={intervention}
               isPlanned={false}
@@ -143,7 +143,7 @@ const SiteDetails = ({ site, shortestIntervention, interventions }) => {
             site={site}
           />
           {plannedInterventions.map((intervention) => (
-            <Intervention
+            <Interventions
               key={intervention._id}
               intervention={intervention}
               isPlanned={true}

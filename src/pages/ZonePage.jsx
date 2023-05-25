@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SiteDetails from "../composants/SiteDetails/SiteDetails";
 import RemainingTimeIndicator from "../composants/RemainingTimeIndicator/RemainingTimeIndicator";
+import SearchIntervention from '../composants/SearchIntervention/SearchIntervention'; // Assurez-vous que le chemin est correct
+import Intervention from '../composants/Intervention/Intervention'; // Assurez-vous que le chemin est correct
 
 
 function ZonePage() {
@@ -11,6 +13,9 @@ function ZonePage() {
   const [selectedSite, setSelectedSite] = useState(null);
   const [interventions, setInterventions] = useState([]);
   const [siteWithShortestIntervention, setSiteWithShortestIntervention] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [filteredInterventions, setFilteredInterventions] = useState(interventions);
+
 
   const generateJSONFromXLSX = async () => {
     const response = await fetch("/SMEP.xlsx");
@@ -127,6 +132,15 @@ function ZonePage() {
       <h2 className="titleZone">
         {zoneId === "production" ? "Mazères" : "Surpressions"}
       </h2>
+      <div>
+      <button onClick={() => setSearchOpen(!searchOpen)}>
+        {searchOpen ? 'Fermer la recherche' : 'Rechercher'}
+      </button>
+      {searchOpen && <SearchIntervention setFilteredInterventions={setFilteredInterventions} />}
+      {filteredInterventions.map(intervention => (
+        <Intervention key={intervention._id} intervention={intervention} />
+      ))}
+    </div>
       <div className="ZoneContent">
         <div className="sites">
           <div className="sectionButtonsSites">
