@@ -25,11 +25,13 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
     const updatedHours = intervention.hours + hoursToAdd;
     const updatedRemainingHours = updatedHours - siteTotalHours;
     const updatedIntervention = { ...intervention, hours: updatedHours, remainingHours: updatedRemainingHours };
-    if (updatedRemainingHours <= 0) {
-      updatedIntervention.interventionType = 'realized';
-      setIsPlannedState(false); // Update state if intervention is realized
-    }
     onEdit(updatedIntervention._id, updatedIntervention);
+  };
+
+  const markAsDone = () => {
+    const updatedIntervention = { ...intervention, interventionType: 'realized' };
+    onEdit(updatedIntervention._id, updatedIntervention);
+    setIsPlannedState(false);
   };
   
   const remainingHours = intervention.hours - siteTotalHours;
@@ -43,7 +45,6 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
       return `Soit un temps de fonctionnement de ${(remainingHours / 720).toFixed(0)} mois`;
     }
   };
-
 
   const frenchOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -76,7 +77,7 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
         </>
       ) : (
         <>
-          {isPlanned && (
+          {isPlannedState && (
             <>
               <p>Heures prévues : {intervention.hours} heures</p>
               <p>Heures restantes avant l'intervention : {remainingHours.toFixed(2)} heures</p>
@@ -92,6 +93,7 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
                 <p>Mois</p>
                 <button className='supply-BtnMonth' onClick={() => handleTimeUpdate(-720)}>-</button>
               </div>
+              <button onClick={markAsDone}>Réalisée</button>
             </>
           )}
           <button onClick={handleEdit}>Modifier</button>

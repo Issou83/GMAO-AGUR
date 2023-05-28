@@ -17,6 +17,10 @@ const InterventionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  equipmentName: { // Le nouveau champ
+    type: String,
+    required: false,
+  },
   hours: {
     type: Number,
     default: 0,
@@ -27,7 +31,6 @@ const InterventionSchema = new mongoose.Schema({
   },
   remainingHours: {
     type: Number,
-    // default: 0
     required: false,
   },
   interventionType: {
@@ -35,14 +38,6 @@ const InterventionSchema = new mongoose.Schema({
     enum: ['planned', 'realized'],
     default: 'planned',
   },
-});
-
-InterventionSchema.pre('save', function(next) {
-  this.remainingHours = this.hours - this.siteTotalHours;
-  if (this.remainingHours < 0) {
-    this.interventionType = 'realized';
-  }
-  next();
 });
 
 const Intervention = mongoose.model('Intervention', InterventionSchema);

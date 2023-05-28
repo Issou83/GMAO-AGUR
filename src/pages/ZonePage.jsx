@@ -3,19 +3,19 @@ import { useParams } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SiteDetails from "../composants/SiteDetails/SiteDetails";
 import RemainingTimeIndicator from "../composants/RemainingTimeIndicator/RemainingTimeIndicator";
-import SearchIntervention from '../composants/SearchIntervention/SearchIntervention'; // Assurez-vous que le chemin est correct
-import Intervention from '../composants/Intervention/Intervention'; // Assurez-vous que le chemin est correct
-
+import SearchIntervention from "../composants/SearchIntervention/SearchIntervention"; // Assurez-vous que le chemin est correct
+import Intervention from "../composants/Intervention/Intervention"; // Assurez-vous que le chemin est correct
 
 function ZonePage() {
   const { zoneId } = useParams();
   const [sites, setSites] = useState([]);
   const [selectedSite, setSelectedSite] = useState(null);
   const [interventions, setInterventions] = useState([]);
-  const [siteWithShortestIntervention, setSiteWithShortestIntervention] = useState(null);
+  const [siteWithShortestIntervention, setSiteWithShortestIntervention] =
+    useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [filteredInterventions, setFilteredInterventions] = useState(interventions);
-
+  const [filteredInterventions, setFilteredInterventions] =
+    useState(interventions);
 
   const generateJSONFromXLSX = async () => {
     const response = await fetch("/SMEP.xlsx");
@@ -53,13 +53,13 @@ function ZonePage() {
   const loadSites = async () => {
     const jsonData = await generateJSONFromXLSX();
     let sites = [];
-    
+
     if (zoneId === "production") {
       sites = jsonData.production;
     } else if (zoneId === "surpressions") {
       sites = jsonData.surpressions;
     }
-    
+
     // console.log(sites);
     return sites;
   };
@@ -88,25 +88,27 @@ function ZonePage() {
   const updateShortestInterventions = () => {
     const shortestInterventions = {};
     for (let intervention of interventions) {
-      if (intervention.interventionType !== 'planned') {
+      if (intervention.interventionType !== "planned") {
         continue;
       }
-      if (shortestInterventions[intervention.siteName] === undefined ||
-          intervention.remainingHours < shortestInterventions[intervention.siteName].remainingHours) {
+      if (
+        shortestInterventions[intervention.siteName] === undefined ||
+        intervention.remainingHours <
+          shortestInterventions[intervention.siteName].remainingHours
+      ) {
         shortestInterventions[intervention.siteName] = intervention;
       }
     }
 
-    let sitesWithShortestInterventions = sites.map(site => {
+    let sitesWithShortestInterventions = sites.map((site) => {
       return {
         ...site,
-        shortestIntervention: shortestInterventions[site.name]
+        shortestIntervention: shortestInterventions[site.name],
       };
     });
 
     setSites(sitesWithShortestInterventions);
   };
-
 
   useEffect(() => {
     const loadAndSetInterventions = async () => {
@@ -120,7 +122,6 @@ function ZonePage() {
       loadAndSetInterventions();
     }
   }, [sites, interventions]);
-  
 
   const handleSiteClick = (site) => {
     setSelectedSite(site);
@@ -133,41 +134,51 @@ function ZonePage() {
         {zoneId === "production" ? "Mazères" : "Surpressions"}
       </h2>
       <div>
-      <button onClick={() => setSearchOpen(!searchOpen)}>
-        {searchOpen ? 'Fermer la recherche' : 'Rechercher'}
-      </button>
-      {searchOpen && <SearchIntervention setFilteredInterventions={setFilteredInterventions} />}
-      {filteredInterventions.map(intervention => (
-        <Intervention key={intervention._id} intervention={intervention} />
-      ))}
-    </div>
+        <button onClick={() => setSearchOpen(!searchOpen)}>
+          {searchOpen ? "Fermer la recherche" : "Rechercher"}
+        </button>
+        {searchOpen && (
+          <SearchIntervention
+            setFilteredInterventions={setFilteredInterventions}
+          />
+        )}
+        {filteredInterventions.map((intervention) => (
+          <Intervention key={intervention._id} intervention={intervention} />
+        ))}
+      </div>
       <div className="ZoneContent">
         <div className="sites">
           <div className="sectionButtonsSites">
             {sites.map((site, index) => (
               <div key={index}>
                 <button
-                  className="siteButton"
-                  onClick={() => handleSiteClick(site)}>
+                  className={`siteButton ${
+                    site.shortestIntervention &&
+                    site.shortestIntervention.remainingHours < 0
+                      ? "siteButtonNegative"
+                      : ""
+                  }`}
+                  onClick={() => handleSiteClick(site)}
+                >
                   <p>{site.name}</p>
                   {site.shortestIntervention && (
-                  <RemainingTimeIndicator
-                    remainingHours={site.shortestIntervention.remainingHours}
-                  />
-                )}
+                    <RemainingTimeIndicator
+                      remainingHours={site.shortestIntervention.remainingHours}
+                    />
+                  )}
                 </button>
               </div>
             ))}
           </div>
         </div>
-        </div>
-        {selectedSite && (
-          <SiteDetails
-            site={selectedSite}
-            shortestIntervention={siteWithShortestIntervention}
-            interventions={interventions}
-          />
-        )}
+      </div>
+      {selectedSite && (
+        <SiteDetails
+          site={selectedSite}
+          shortestIntervention={siteWithShortestIntervention}
+          interventions={interventions}
+        />
+      )}
     </main>
   );
 }
