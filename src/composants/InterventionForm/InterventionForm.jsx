@@ -65,7 +65,7 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
           required
         />
       )}
-      <button type="submit">Ajouter</button>
+      <br /><button type="submit">Ajouter</button>
     </form>
   );
 };

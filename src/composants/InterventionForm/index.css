@@ -1,9 +1,14 @@
 .formulaires {
+    width: auto;
+    padding: 5px;
     border: 1px solid rgb(93, 206, 255) ;
+    border-radius: 10px;
 }
 .formulaires input {
 margin: 3px 1px;
+padding:5px;
+/* line-height: 50px; */
+width: 98%;
 }
-.descript {
-
-}
+/* .descript {
+} */

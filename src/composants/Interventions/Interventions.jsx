@@ -53,8 +53,7 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
   const frenchOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
   return (
-     <div className='intervention'>
-    {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
+    <div className={`intervention ${remainingHours < 0 ? "interventionAlerte" : ""}`}>    {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
     <p>Equipement concerné : <b>{intervention.equipmentName}</b></p>
     <p>Description : <b>{intervention.description}</b></p>
     <p>Agent : <b>{intervention.agent}</b></p>

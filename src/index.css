@@ -69,7 +69,22 @@ h1 {
 
 .siteButtonNegative {
   background: red;
+  animation: animate 1s linear infinite;
 }
+
+@keyframes animate {
+    0% {
+        border: 3px solid  rgb(93, 206, 255);
+    }
+    50% {
+        border: 3px solid  rgb(255, 0, 0);
+    }
+    100% {
+        border: 3px solid  rgb(93, 206, 255);
+    }
+  }
+
+
 .siteButtonEndTime {
   background: rgb(255, 132, 0);
 }
