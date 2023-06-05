@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "./index.css";
 
 const InterventionForm = ({ site, onSubmit, isPlanned }) => {
   const [date, setDate] = useState('');
@@ -25,7 +26,7 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
   };
   
   return (
-    <form onSubmit={handleSubmit}>
+    <form className='formulaires' onSubmit={handleSubmit}>
       {isPlanned ? ("") : (
         <input
           type="date"

@@ -61,6 +61,7 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
       {isEditing ? (
         <>
           <input
+          className='descript'
             type="text"
             name="description"
             value={editedIntervention.description}

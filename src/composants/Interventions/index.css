@@ -1,5 +1,10 @@
 h3 {
     text-align: center;
+    border-bottom:  3px solid  rgb(93, 206, 255);
+}
+
+.interventionsAll {
+    margin: 0 30px;
 }
 
 .intervention {
