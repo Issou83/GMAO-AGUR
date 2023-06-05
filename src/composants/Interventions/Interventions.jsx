@@ -37,12 +37,16 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
   const remainingHours = intervention.hours - siteTotalHours;
 
   const getTimeRemainingString = (remainingHours) => {
+    if (remainingHours < 0) {
+      return `Temps de fonctionnement dépassé de plus de ${(remainingHours.toFixed(0))} Heures`;}
+
+
     if (remainingHours < 168) {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 24).toFixed(0)} jours`;
+      return `Soit un temps de fonctionnement de plus de ${(remainingHours / 24).toFixed(1)} jours`;
     } else if (remainingHours < 720) {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 168).toFixed(0)} semaines`;
+      return `Soit un temps de fonctionnement de plus de ${(remainingHours / 168).toFixed(1)} semaines`;
     } else {
-      return `Soit un temps de fonctionnement de ${(remainingHours / 720).toFixed(0)} mois`;
+      return `Soit un temps de fonctionnement de plus de ${(remainingHours / 720).toFixed(1)} mois`;
     }
   };
 
@@ -51,8 +55,9 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
   return (
      <div className='intervention'>
     {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
-    <p>Description : {intervention.description}</p>
-    <p>Agent : {intervention.agent}</p>
+    <p>Equipement concerné : <b>{intervention.equipmentName}</b></p>
+    <p>Description : <b>{intervention.description}</b></p>
+    <p>Agent : <b>{intervention.agent}</b></p>
       {isEditing ? (
         <>
           <input
@@ -68,6 +73,12 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
             onChange={handleChange}
           />
           <input
+            type="text"
+            name="equipementName"
+            value={editedIntervention.equipmentName}
+            onChange={handleChange}
+          />
+          <input
             type="number"
             name="hours"
             value={editedIntervention.hours}
@@ -79,8 +90,8 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
         <>
           {isPlannedState && (
             <>
-              <p>Heures prévues : {intervention.hours} heures</p>
-              <p>Heures restantes avant l'intervention : {remainingHours.toFixed(2)} heures</p>
+              <p>Heures prévues : <b>{intervention.hours}</b> heures</p>
+              <p>Heures restantes avant l'intervention : <b>{remainingHours.toFixed(2)}</b> heures</p>
               <p>({getTimeRemainingString(remainingHours)})</p>
               <RemainingTimeIndicator key={intervention._id} remainingHours={remainingHours} /><br></br>
               <div className='supply'>

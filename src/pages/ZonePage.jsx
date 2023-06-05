@@ -29,7 +29,7 @@ function ZonePage() {
     let jsonData = { production: [], surpressions: [] };
 
     for (let col = 51; col <= 64; col++) {
-      if (col === 54 || col === 57 || col === 60) continue;
+      // if (col === 54 || col === 57 || col === 60) continue;
       const siteName = jsonSheet[6][col];
       const siteHours = jsonSheet.slice(9).map((row) => row[col]);
       const totalHours = siteHours
@@ -114,14 +114,18 @@ function ZonePage() {
     const loadAndSetInterventions = async () => {
       const loadedInterventions = await loadInterventions();
       setInterventions(loadedInterventions);
-
-      updateShortestInterventions();
     };
 
     if (sites.length > 0) {
       loadAndSetInterventions();
     }
-  }, [sites, interventions]);
+  }, [sites]); // Retirer 'interventions' de la liste des dépendances
+
+  useEffect(() => {
+    if (interventions.length > 0) {
+      updateShortestInterventions();
+    }
+  }, [interventions]);
 
   const handleSiteClick = (site) => {
     setSelectedSite(site);
@@ -151,22 +155,29 @@ function ZonePage() {
           <div className="sectionButtonsSites">
             {sites.map((site, index) => (
               <div key={index}>
-                <button
-                  className={`siteButton ${
-                    site.shortestIntervention &&
-                    site.shortestIntervention.remainingHours < 0
-                      ? "siteButtonNegative"
-                      : ""
-                  }`}
-                  onClick={() => handleSiteClick(site)}
-                >
-                  <p>{site.name}</p>
-                  {site.shortestIntervention && (
-                    <RemainingTimeIndicator
-                      remainingHours={site.shortestIntervention.remainingHours}
-                    />
-                  )}
-                </button>
+                {site.totalHours !== 0 && (
+                  <button
+                    className={`siteButton ${
+                      site.shortestIntervention &&
+                      (site.shortestIntervention.remainingHours < 0
+                        ? "siteButtonNegative"
+                        : site.shortestIntervention.remainingHours > 0 &&
+                          site.shortestIntervention.remainingHours <= 168
+                        ? "siteButtonEndTime"
+                        : "")
+                    }`}
+                    onClick={() => handleSiteClick(site)}
+                  >
+                    <p>{site.name}</p>
+                    {site.shortestIntervention && (
+                      <RemainingTimeIndicator
+                        remainingHours={
+                          site.shortestIntervention.remainingHours
+                        }
+                      />
+                    )}
+                  </button>
+                )}
               </div>
             ))}
           </div>

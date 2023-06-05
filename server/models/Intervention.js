@@ -17,7 +17,7 @@ const InterventionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  equipmentName: { // Le nouveau champ
+  equipmentName: {
     type: String,
     required: false,
   },

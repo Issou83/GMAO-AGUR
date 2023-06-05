@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 body {
+  margin: 0;
   font-family: "Lora";
   list-style-type: none;
 }
 
 main {
-  margin-top: 150px;
+  width: 100%;
+  margin: 150px 0 0 0;
 }
 
 .mainHome {
@@ -41,7 +43,7 @@ h1 {
 .sectionButtonsSites {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
 
 }
@@ -68,10 +70,13 @@ h1 {
 .siteButtonNegative {
   background: red;
 }
+.siteButtonEndTime {
+  background: rgb(255, 132, 0);
+}
 
 
 .siteButton:active {
-  background: rgb(81, 164, 200);
+  background: rgb(5, 63, 238);
   
 }
 .siteButton:hover p {

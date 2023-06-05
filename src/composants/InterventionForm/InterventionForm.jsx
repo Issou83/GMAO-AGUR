@@ -52,7 +52,7 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
         type="text"
         value={equipmentName}
         onChange={(e) => setEquipmentName(e.target.value)}
-        placeholder="Nom de l'équipement"  // Ajoutez le champ d'input pour le nom de l'équipement
+        placeholder="Nom de l'équipement"  
         required
       />
       {isPlanned && (
