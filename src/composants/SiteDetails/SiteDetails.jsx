@@ -5,7 +5,7 @@ import RemainingTimeIndicator from "../RemainingTimeIndicator/RemainingTimeIndic
 
 import "./index.css";
 
-const SiteDetails = ({ site, shortestIntervention, interventions }) => {
+const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
   const [realizedInterventions, setRealizedInterventions] = useState([]);
   const [plannedInterventions, setPlannedInterventions] = useState([]);
 
@@ -109,9 +109,15 @@ const SiteDetails = ({ site, shortestIntervention, interventions }) => {
     <div>
       <div className="siteDetailsTitle">
         <h2>{site.name}</h2>
-        <p className="totalTime">
-          Temps total de fonctionnement (année en cours): {site.totalHours.toFixed(1)} heures
-        </p>
+        {zoneId === "reservoirs" ? (
+  <p className="totalTime">Date du jour: {new Date().toLocaleDateString()}</p>
+) : (
+  <p className="totalTime">
+    Temps total de fonctionnement (année en cours): {site.totalHours.toFixed(1)} heures
+  </p>
+)}
+
+
         {/* {shortestIntervention && (
           <RemainingTimeIndicator remainingHours={shortestIntervention.remainingHours} />
         )} */}

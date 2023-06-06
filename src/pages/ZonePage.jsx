@@ -5,6 +5,9 @@ import SiteDetails from "../composants/SiteDetails/SiteDetails";
 import RemainingTimeIndicator from "../composants/RemainingTimeIndicator/RemainingTimeIndicator";
 import SearchIntervention from "../composants/SearchIntervention/SearchIntervention"; // Assurez-vous que le chemin est correct
 import Intervention from "../composants/Intervention/Intervention"; // Assurez-vous que le chemin est correct
+import dataZones from "../../public/dataZones.json";
+console.log(dataZones);
+
 
 function ZonePage() {
   const { zoneId } = useParams();
@@ -26,7 +29,7 @@ function ZonePage() {
     const sheet = workbook.Sheets[sheetName];
     const jsonSheet = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    let jsonData = { production: [], surpressions: [] };
+    let jsonData = { production: [], surpressions: [] ,reservoirs: []};
 
     for (let col = 51; col <= 64; col++) {
       // if (col === 54 || col === 57 || col === 60) continue;
@@ -53,14 +56,15 @@ function ZonePage() {
   const loadSites = async () => {
     const jsonData = await generateJSONFromXLSX();
     let sites = [];
-
+  
     if (zoneId === "production") {
       sites = jsonData.production;
     } else if (zoneId === "surpressions") {
       sites = jsonData.surpressions;
+    } else if (zoneId === "reservoirs") {
+      sites = dataZones || [];
     }
-
-    // console.log(sites);
+  
     return sites;
   };
 
@@ -134,9 +138,13 @@ function ZonePage() {
 
   return (
     <main>
-      <h2 className="titleZone">
-        {zoneId === "production" ? "Mazères" : "Surpressions"}
-      </h2>
+    <h2 className="titleZone">
+  {zoneId === "production"
+    ? "Mazères"
+    : zoneId === "surpressions"
+    ? "Surpressions"
+    : "Réservoirs"}
+</h2>
       <div>
         <button onClick={() => setSearchOpen(!searchOpen)}>
           {searchOpen ? "Fermer la recherche" : "Rechercher"}
@@ -153,33 +161,32 @@ function ZonePage() {
       <div className="ZoneContent">
         <div className="sites">
           <div className="sectionButtonsSites">
-            {sites.map((site, index) => (
-              <div key={index}>
-                {site.totalHours !== 0 && (
-                  <button
-                    className={`siteButton ${
-                      site.shortestIntervention &&
-                      (site.shortestIntervention.remainingHours < 0
-                        ? "siteButtonNegative"
-                        : site.shortestIntervention.remainingHours > 0 &&
-                          site.shortestIntervention.remainingHours <= 168
-                        ? "siteButtonEndTime"
-                        : "")
-                    }`}
-                    onClick={() => handleSiteClick(site)}
-                  >
-                    <p>{site.name}</p>
-                    {site.shortestIntervention && (
-                      <RemainingTimeIndicator
-                        remainingHours={
-                          site.shortestIntervention.remainingHours
-                        }
-                      />
-                    )}
-                  </button>
-                )}
-              </div>
-            ))}
+          {sites.map((site, index) => (
+  <div key={index}>
+    {site.totalHours !== 0 && (
+      <button
+        className={`siteButton ${
+          site.shortestIntervention &&
+          (site.shortestIntervention.remainingHours < 0
+            ? "siteButtonNegative"
+            : site.shortestIntervention.remainingHours > 0 &&
+              site.shortestIntervention.remainingHours <= 168
+            ? "siteButtonEndTime"
+            : "")
+        }`}
+        onClick={() => handleSiteClick(site)}
+      >
+        <p>{site.name}</p>
+        {site.shortestIntervention && (
+          <RemainingTimeIndicator
+            remainingHours={site.shortestIntervention.remainingHours}
+          />
+        )}
+      </button>
+    )}
+  </div>
+))}
+
           </div>
         </div>
       </div>
@@ -188,6 +195,8 @@ function ZonePage() {
           site={selectedSite}
           shortestIntervention={siteWithShortestIntervention}
           interventions={interventions}
+          zoneId={zoneId}
+          
         />
       )}
     </main>

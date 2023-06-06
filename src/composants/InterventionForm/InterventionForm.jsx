@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import "./index.css";
+import { useParams } from "react-router-dom";
 
 const InterventionForm = ({ site, onSubmit, isPlanned }) => {
   const [date, setDate] = useState('');
@@ -7,6 +8,7 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
   const [agent, setAgent] = useState('');
   const [hours, setHours] = useState('');
   const [equipmentName, setEquipmentName] = useState('');  // Nouveau champ pour le nom de l'équipement
+  const { zoneId } = useParams();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,13 +59,21 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
         required
       />
       {isPlanned && (
-        <input
+        zoneId === "reservoirs"
+        ? ( <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />)
+        : ( <input
           type="number"
           value={hours}
           onChange={(e) => setHours(e.target.value)}
           placeholder="Heures prévues"
           required
-        />
+          />)
+      
       )}
       <br /><button type="submit">Ajouter</button>
     </form>
