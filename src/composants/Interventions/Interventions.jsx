@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import RemainingTimeIndicator from '../RemainingTimeIndicator/RemainingTimeIndicator';
 import './index.css';
 
-const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHours }) => {
+const Intervention = ({ intervention, isPlanned, isCyclic, onDelete, onEdit, siteTotalHours }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedIntervention, setEditedIntervention] = useState(intervention);
   const [isPlannedState, setIsPlannedState] = useState(isPlanned);
@@ -22,17 +22,67 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
   };
 
   const handleTimeUpdate = async (hoursToAdd) => {
-    const updatedHours = intervention.hours + hoursToAdd;
+    const updatedHours = intervention.hours + hoursToAdd; // Ajoutez hoursToAdd aux heures actuelles
     const updatedRemainingHours = updatedHours - siteTotalHours;
     const updatedIntervention = { ...intervention, hours: updatedHours, remainingHours: updatedRemainingHours };
     onEdit(updatedIntervention._id, updatedIntervention);
   };
-
-  const markAsDone = () => {
-    const updatedIntervention = { ...intervention, interventionType: 'realized' };
-    onEdit(updatedIntervention._id, updatedIntervention);
-    setIsPlannedState(false);
+  
+  const markAsDone = async () => {
+    // Créer une nouvelle intervention réalisée basée sur l'intervention prévue
+    const newRealizedIntervention = {
+      ...intervention,
+      interventionType: 'realized',
+      date: new Date().toISOString().split('T')[0], // ajoute la date du jour
+    };
+    delete newRealizedIntervention._id; // Supprime l'_id
+  
+    // Faire une requête POST à l'API pour créer la nouvelle intervention
+    let response = await fetch("http://localhost:5000/api/interventions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newRealizedIntervention),
+    });
+  
+    // L'API nous renvoie l'intervention créée avec son nouvel ID
+    const savedRealizedIntervention = await response.json();
+  
+    // Utiliser l'ID de l'intervention créée pour mettre à jour l'état de l'application côté client
+    onEdit(savedRealizedIntervention._id, savedRealizedIntervention);
+  
+    if (intervention.fromCyclic) {
+      const newPlannedIntervention = {
+        ...intervention,
+        interventionType: 'planned',
+        hours: siteTotalHours + Number(intervention.cycleHours),
+      };
+      // delete newPlannedIntervention._id; // Supprime l'_id
+  
+      // Faire une requête POST à l'API pour créer la nouvelle intervention
+      response = await fetch("http://localhost:5000/api/interventions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPlannedIntervention),
+      });
+  
+      // L'API nous renvoie l'intervention créée avec son nouvel ID
+      const savedPlannedIntervention = await response.json();
+  
+      // Utiliser l'ID de l'intervention créée pour mettre à jour l'état de l'application côté client
+      onEdit(savedPlannedIntervention._id, savedPlannedIntervention);
+    }
+  
+    // Supprimer l'ancienne intervention prévue
+    await fetch(`http://localhost:5000/api/interventions/${intervention._id}`, {
+      method: "DELETE",
+    });
   };
+  
+  
+  
+  
+  
+  
   
   const remainingHours = intervention.hours - siteTotalHours;
 
@@ -107,6 +157,7 @@ const Intervention = ({ intervention, isPlanned, onDelete, onEdit, siteTotalHour
               <button onClick={markAsDone}>Réalisée</button>
             </>
           )}
+            {isCyclic && <p>Cycle en heures : <b>{intervention.cycleHours}</b></p>}
           <button onClick={handleEdit}>Modifier</button>
           <button onClick={() => onDelete(intervention._id)}>Supprimer</button>
         </>

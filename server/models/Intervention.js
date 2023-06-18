@@ -27,7 +27,7 @@ const InterventionSchema = new mongoose.Schema({
   },
   siteTotalHours: {
     type: Number,
-    default: 0,
+    required: false,
   },
   remainingHours: {
     type: Number,
@@ -35,8 +35,16 @@ const InterventionSchema = new mongoose.Schema({
   },
   interventionType: {
     type: String,
-    enum: ['planned', 'realized'],
+    enum: ['planned', 'realized', 'cyclic'], // Ajouter le type 'cyclic'
     default: 'planned',
+  },
+  cycleHours: {
+    type: Number, // Nouveau champ pour le cycle en heures
+    default: 0,
+  },
+  isFromCyclic: {
+    type: Boolean,
+    default: false,
   },
 });
 

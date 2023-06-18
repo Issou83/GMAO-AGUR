@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import "./index.css";
 import { useParams } from "react-router-dom";
 
-const InterventionForm = ({ site, onSubmit, isPlanned }) => {
+const InterventionForm = ({ site, onSubmit, isPlanned, isCyclic}) => {
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [agent, setAgent] = useState('');
   const [hours, setHours] = useState('');
   const [equipmentName, setEquipmentName] = useState('');  // Nouveau champ pour le nom de l'équipement
   const { zoneId } = useParams();
+  const [cycleHours, setCycleHours] = useState(''); // Nouveau champ pour le cycle en heures
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +21,8 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
       agent, 
       equipmentName,  // Ajoutez le nom de l'équipement aux données envoyées lors de la soumission du formulaire
       hours: isPlanned ? Number(hours) : undefined,
+      cycleHours,
+      siteTotalHours : site.totalHours.toFixed(1),
     });
     setDate('');
     setDescription('');
@@ -29,7 +33,7 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
   
   return (
     <form className='formulaires' onSubmit={handleSubmit}>
-      {isPlanned ? ("") : (
+      {isPlanned || isCyclic ? ("") : (
         <input
           type="date"
           value={date}
@@ -71,6 +75,23 @@ const InterventionForm = ({ site, onSubmit, isPlanned }) => {
           value={hours}
           onChange={(e) => setHours(e.target.value)}
           placeholder="Heures prévues"
+          required
+          />)
+      
+      )}
+       {isCyclic && (
+        zoneId === "reservoirs"
+        ? ( <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />)
+        : ( <input
+          type="number"
+          value={cycleHours}
+          onChange={(e) => setCycleHours(e.target.value)}
+          placeholder="Cycle en heures"
           required
           />)
       
