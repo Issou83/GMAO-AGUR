@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Interventions from "../Interventions/Interventions";
 import InterventionForm from "../InterventionForm/InterventionForm";
 import RemainingTimeIndicator from "../RemainingTimeIndicator/RemainingTimeIndicator";
+import SiteDetailsForm from "../SiteDetailsForm/SiteDetailsForm"
+
 
 import "./index.css";
 
@@ -169,6 +171,7 @@ const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
         {/* {shortestIntervention && (
           <RemainingTimeIndicator remainingHours={shortestIntervention.remainingHours} />
         )} */}
+        <SiteDetailsForm site={site}/>
       </div>
       <div className="interventionsAll">
         <div className="interventionRealized">

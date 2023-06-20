@@ -1,20 +1,13 @@
 import mongoose from 'mongoose';
 
-const SiteSchema = new mongoose.Schema({
-  lat: {
-    type: Number,
-    required: true
-  },
-  lon: {
-    type: Number,
-    required: true
-  },
-  photo: {
-    type: String,
-    required: false
-  },
+const siteDetailsSchema = new mongoose.Schema({
+  siteName: { type: String, required: true },
+  gpsCoordinates: [{
+    type: Number, required: true,
+  }],
+  image: { type: String },
 });
 
-const Site = mongoose.model('Site', SiteSchema);
+const SiteDetails = mongoose.model('SiteDetails', siteDetailsSchema);
 
-export default Site;
+export default SiteDetails;

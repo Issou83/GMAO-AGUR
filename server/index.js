@@ -2,9 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import Intervention from './models/Intervention.js';
+import SiteDetails from './models/Site.js';
 import { MONGO_URI } from './config.js';
 import path from 'path';
 import dotenv from 'dotenv';
+
 dotenv.config({
   path: ".env",
 });
@@ -12,16 +14,8 @@ dotenv.config({
 const app = express();
 
 app.use(express.json());
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  next();
-});
+
+app.use(cors());
 
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -30,6 +24,35 @@ mongoose
   })
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));
+
+  app.post('/api/site-details', async (req, res) => {
+    console.log(req.body);
+    const { siteName, gpsCoordinates, image } = req.body;
+  
+    const siteDetails = new SiteDetails({ siteName, gpsCoordinates, image });
+    const savedSiteDetails = await siteDetails.save();
+    res.json(savedSiteDetails);
+  });
+
+app.get('/api/site-details/:siteName', async (req, res) => {
+  const { siteName } = req.params;
+  const siteDetails = await SiteDetails.findOne({ siteName });
+  res.json(siteDetails);
+});
+
+app.put('/api/site-details/:siteName', async (req, res) => {
+  const { siteName } = req.params;
+  const { gpsCoordinates, image } = req.body;
+
+  const updatedSiteDetails = await SiteDetails.findOneAndUpdate({ siteName }, { gpsCoordinates, image }, { new: true });
+  res.json(updatedSiteDetails);
+});
+
+app.delete('/api/site-details/:siteName', async (req, res) => {
+  const { siteName } = req.params;
+  const deletedSiteDetails = await SiteDetails.findOneAndDelete({ siteName });
+  res.json(deletedSiteDetails);
+});
 
 app.get('/api/interventions', async (req, res) => {
   const interventions = await Intervention.find();
@@ -49,7 +72,7 @@ app.post('/api/interventions', async (req, res) => {
     while (await Intervention.findById(newId)) {
       newId = new mongoose.Types.ObjectId();
     }
-    
+
     const plannedIntervention = new Intervention({
       ...savedIntervention._doc,
       _id: newId,
@@ -77,7 +100,7 @@ app.put('/api/interventions/:id', async (req, res) => {
 
     if (!updatedIntervention) {
       console.error('No intervention found with this id:', id);
-      return res.status(404).json({message: 'No intervention found with this id' });
+      return res.status(404).json({ message: 'No intervention found with this id' });
     }
 
     // Si l'intervention est issue d'une intervention cyclique, créer une nouvelle intervention prévue
@@ -91,7 +114,7 @@ app.put('/api/interventions/:id', async (req, res) => {
         hours: updatedIntervention.siteTotalHours + updatedIntervention.cycleHours,
         isFromCyclic: true,
       });
-  
+
       const savedPlannedIntervention = await plannedIntervention.save();
       console.log("Saved planned intervention data:", savedPlannedIntervention); // Log the saved data
     }
@@ -99,19 +122,9 @@ app.put('/api/interventions/:id', async (req, res) => {
     res.json(updatedIntervention);
   } catch (error) {
     console.error('Error updating intervention:', error);
-    res.status(500).json({message: 'Error updating intervention' });
+    res.status(500).json({ message: 'Error updating intervention' });
   }
 });
-
-
-
-
-
-
-
-
-
-
 
 app.delete('/api/interventions/:id', async (req, res) => {
   const { id } = req.params;
