@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./index.css"
+import "./index.css";
 
 const SiteDetailsForm = ({ site }) => {
   const [details, setDetails] = useState(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [formVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -72,42 +73,50 @@ const SiteDetailsForm = ({ site }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-        <div className="siteInfos">
-      {details?.image && <img src={details.image} className="siteImage" alt="Site" />}{" "}
-      <button type="button" onClick={openGoogleMaps}>GPS</button>
-      </div>
-      {/* <h3>Site Details</h3> */}
-      <div>
-        <label>Localisation GPS:</label>
-        <input
-          type="text"
-          value={details?.gpsCoordinates.join(", ") || ""}
-          onChange={(e) =>
-            setDetails({
-              ...details,
-              gpsCoordinates: e.target.value.split(","),
-            })
-          }
-        />
-      </div>
-      <div>
-        <label>Image URL:</label>
-        <input
-          type="text"
-          value={details?.image || ""}
-          onChange={(e) => setDetails({ ...details, image: e.target.value })}
-        />
-      </div>
-      <button type="submit">
-        {isUpdateMode ? "Mettre à jour" : "Créer"} 
-      </button>
-      {details && (
-        <button type="button" onClick={handleDelete}>
-          Effacer
+    <div>
+      <div className="siteInfos">
+        {details?.image && (
+          <img src={details.image} className="siteImage" alt="Site" />
+        )}{" "}
+        <button type="button" onClick={openGoogleMaps} className="btnGPS">
+          GPS
         </button>
+      </div>
+      <button onClick={() => setFormVisible(!formVisible)}>{formVisible ? 'X' : 'Plus'}</button>
+      {formVisible && (
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Localisation GPS:</label>
+          <input
+            type="text"
+            value={details?.gpsCoordinates.join(", ") || ""}
+            onChange={(e) =>
+              setDetails({
+                ...details,
+                gpsCoordinates: e.target.value.split(","),
+              })
+            }
+          />
+        </div>
+        <div>
+          <label>Image URL:</label>
+          <input
+            type="text"
+            value={details?.image || ""}
+            onChange={(e) => setDetails({ ...details, image: e.target.value })}
+          />
+        </div>
+        <button type="submit">
+          {isUpdateMode ? "Mettre à jour" : "Créer"}
+        </button>
+        {details && (
+          <button type="button" onClick={handleDelete}>
+            Effacer
+          </button>
+        )}
+      </form>
       )}
-    </form>
+    </div>
   );
 };
 

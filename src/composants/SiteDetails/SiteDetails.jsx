@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import Interventions from "../Interventions/Interventions";
 import InterventionForm from "../InterventionForm/InterventionForm";
 import RemainingTimeIndicator from "../RemainingTimeIndicator/RemainingTimeIndicator";
-import SiteDetailsForm from "../SiteDetailsForm/SiteDetailsForm"
-
+import SiteDetailsForm from "../SiteDetailsForm/SiteDetailsForm";
 
 import "./index.css";
 
@@ -16,7 +15,7 @@ const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
     const response = await fetch("http://localhost:5000/api/interventions");
     const interventions = await response.json();
     console.log("Fetched interventions:", interventions); // Log the fetched interventions
-  
+
     if (interventions) {
       const filteredRealized = interventions.filter(
         (i) => i.interventionType === "realized" && i.siteName === site.name
@@ -27,13 +26,13 @@ const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
       const filteredCyclic = interventions.filter(
         (i) => i.interventionType === "cyclic" && i.siteName === site.name
       );
-  
+
       setRealizedInterventions(filteredRealized);
       setPlannedInterventions(filteredPlanned);
       setCyclicInterventions(filteredCyclic);
     }
   };
-  
+
   useEffect(() => {
     fetchInterventions();
   }, [site]);
@@ -140,7 +139,6 @@ const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
     }
 
     fetchInterventions();
-
   };
 
   const handleInterventionDelete = async (id) => {
@@ -156,22 +154,24 @@ const SiteDetails = ({ site, zoneId, shortestIntervention, interventions }) => {
   return (
     <div>
       <div className="siteDetailsTitle">
-        <h2>{site.name}</h2>
-        {zoneId === "reservoirs" ? (
-          <p className="totalTime">
-            Date du jour: {new Date().toLocaleDateString()}
-          </p>
-        ) : (
-          <p className="totalTime">
-            Temps total de fonctionnement (année en cours):{" "}
-            {site.totalHours.toFixed(1)} heures
-          </p>
-        )}
-
+        <h2 className="siteTitle">{site.name}</h2>
+        
         {/* {shortestIntervention && (
           <RemainingTimeIndicator remainingHours={shortestIntervention.remainingHours} />
         )} */}
-        <SiteDetailsForm site={site}/>
+        <SiteDetailsForm site={site} />
+        <div>
+          {zoneId === "reservoirs" ? (
+            <p className="totalTime">
+              Date du jour: {new Date().toLocaleDateString()}
+            </p>
+          ) : (
+            <span className="countHours">
+              <b>{site.totalHours.toFixed(1)}</b><p></p>
+              <p> heures de fonctionnement (année en cours)</p>
+            </span>
+          )}
+        </div>
       </div>
       <div className="interventionsAll">
         <div className="interventionRealized">

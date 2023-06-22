@@ -146,17 +146,19 @@ function ZonePage() {
     : "Réservoirs"}
 </h2>
       <div>
-        <button onClick={() => setSearchOpen(!searchOpen)}>
-          {searchOpen ? "Fermer la recherche" : "Rechercher"}
+      <button onClick={() => setSearchOpen(!searchOpen)}>
+          {searchOpen ? "X" : "Rechercher"}
         </button>
         {searchOpen && (
-          <SearchIntervention
-            setFilteredInterventions={setFilteredInterventions}
-          />
+          <>
+            <SearchIntervention
+              setFilteredInterventions={setFilteredInterventions}
+            />
+            {filteredInterventions.map((intervention) => (
+              <Intervention key={intervention._id} intervention={intervention} />
+            ))}
+          </>
         )}
-        {filteredInterventions.map((intervention) => (
-          <Intervention key={intervention._id} intervention={intervention} />
-        ))}
       </div>
       <div className="ZoneContent">
         <div className="sites">

@@ -1,23 +1,38 @@
 .siteDetailsTitle {
-    margin-top: 20px;
-    border-top: 3px solid rgb(93, 206, 255);
-    border-bottom: 3px solid rgb(93, 206, 255);
+  
+  margin-top: 20px;
+  border-top: 3px solid rgb(93, 206, 255);
+  border-bottom: 3px solid rgb(93, 206, 255);
+}
+
+.siteTitle {
+  font-size: 20px;
+  margin: 0;
+}
+
+.countHours {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 
 .totalTime {
-    text-align: center;
+  text-align: center;
 }
 
 .interventionsAll {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-.interventionRealized ,  .interventionPlanned, .interventionCyclic {
-    border: 1px solid black;
-    border-radius: 8px;
-    width: 45%;
-    padding: 5px;
-    margin: 10px 20px;
-    box-shadow: 5px 5px 5px grey;
+.interventionRealized,
+.interventionPlanned,
+.interventionCyclic {
+  border: 1px solid black;
+  border-radius: 8px;
+  width: 45%;
+  padding: 5px;
+  margin: 10px 20px;
+  box-shadow: 5px 5px 5px grey;
 }
