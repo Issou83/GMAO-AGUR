@@ -18,3 +18,18 @@
   height: 60px;
   border-radius: 50%;
 }
+
+.formVisible {
+  color: red;
+  font-size: 20px;
+  border-radius: 50%;
+  background: none;
+  border: transparent;
+}
+.formInvisible {
+  color: blue;
+  font-size: 25px;
+  border-radius: 50%;
+  background: none;
+  border: transparent;
+}

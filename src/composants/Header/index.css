@@ -4,22 +4,30 @@ header {
   margin-top: 0;
   top: 0;
   box-shadow: 5px 8px 10px grey;
-  background: white;
+  background: rgb(200, 231, 239);
+  border-radius: 0 0 10px 10px;
+  border: 2px solid blue;
+  border-top: none;
 }
 
 .headerContent {
-  position: relative;
+  /* position: relative; */
   display: flex;
   flex-direction: row;
-  height: 120px;
+  height: 80px;
 }
 
 .logoAgur {
   content: "";
   position: absolute;
   left: 5px;
+  /* max-width: 10px; */
   width: auto;
   margin-top: 5px;
+}
+
+.imgLogo {
+  height: 70px;
 }
 
 nav {
@@ -40,7 +48,7 @@ margin: 5px;
 }
 
 .titleHeader h1 {
-    font-size: 30px;
+    font-size: 20px;
     margin: 0;
 }
 

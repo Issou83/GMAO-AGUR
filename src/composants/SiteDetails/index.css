@@ -1,6 +1,11 @@
+.sectionInterventions {
+  margin-bottom: 300px;
+}
+
 .siteDetailsTitle {
   
-  margin-top: 20px;
+  margin: 20px 30px;
+
   border-top: 3px solid rgb(93, 206, 255);
   border-bottom: 3px solid rgb(93, 206, 255);
 }
@@ -21,9 +26,67 @@
   text-align: center;
 }
 
+.showIntervention {
+  margin: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@keyframes slideIntervention {
+  from {
+    opacity: 0;
+    transform: scaleZ(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleZ(1);
+
+  }
+}
+
+.btnInterventions {
+  border-radius: 10px;
+  color: aliceblue;
+  background: rgb(14, 100, 180);
+}
+
 .interventionsAll {
   display: flex;
   justify-content: space-between;
+  transition: all 0.5s;
+}
+
+.interventionsCount-1 .show {
+  width: 100%;
+  animation: slideInterventions 0.5s ease-in-out;
+}
+@keyframes slideInterventions {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+
+  }
+}
+
+.interventionsCount-2 .show {
+  width: 50%;
+  animation: slideInterventions 0.5s ease-in-out;
+}
+
+.interventionsCount-3 .show {
+  width: 33.33%;
+  animation: slideInterventions 0.5s ease-in-out;
+}
+
+.hide {
+  display: none;
+
 }
 
 .interventionRealized,
@@ -35,4 +98,6 @@
   padding: 5px;
   margin: 10px 20px;
   box-shadow: 5px 5px 5px grey;
+  animation: slideIntervention 1s ease-in-out;
+
 }

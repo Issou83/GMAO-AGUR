@@ -103,7 +103,7 @@ const Intervention = ({ intervention, isPlanned, isCyclic, onDelete, onEdit, sit
   const frenchOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
   return (
-    <div className={`intervention ${remainingHours < 0 ? "interventionAlerte" : ""}`}>    {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
+    <div className={`intervention ${remainingHours < 0 && isPlanned ? "interventionAlerte" : ""}`}>    {isPlanned ? ("") : (<p>Date : {new Date(intervention.date).toLocaleDateString('fr-FR', frenchOptions)}</p>)}
     <p>Equipement concerné : <b>{intervention.equipmentName}</b></p>
     <p>Description : <b>{intervention.description}</b></p>
     <p>Agent : <b>{intervention.agent}</b></p>
@@ -158,6 +158,7 @@ const Intervention = ({ intervention, isPlanned, isCyclic, onDelete, onEdit, sit
             </>
           )}
             {isCyclic && <p>Cycle en heures : <b>{intervention.cycleHours}</b></p>}
+            {!isCyclic && !isPlanned ? <p>Réalisée à {intervention.siteTotalHours} heures</p>:""}
           <button onClick={handleEdit}>Modifier</button>
           <button onClick={() => onDelete(intervention._id)}>Supprimer</button>
         </>

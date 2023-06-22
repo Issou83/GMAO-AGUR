@@ -28,10 +28,12 @@ const SiteDetailsForm = ({ site }) => {
     const payload = {
       siteName: site.name,
       gpsCoordinates:
-        details?.gpsCoordinates.map((coord) => parseFloat(coord.trim())) || [],
+        details?.gpsCoordinates.map((coord) => 
+          typeof coord === 'string' ? parseFloat(coord.trim()) : coord
+        ) || [],
       image: details?.image || "",
     };
-
+   
     const options = {
       method: isUpdateMode ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,7 +84,7 @@ const SiteDetailsForm = ({ site }) => {
           GPS
         </button>
       </div>
-      <button onClick={() => setFormVisible(!formVisible)}>{formVisible ? 'X' : 'Plus'}</button>
+      <button onClick={() => setFormVisible(!formVisible)} className={formVisible ? 'formVisible' : 'formInvisible'}>{formVisible ? 'X' : '+'}</button>
       {formVisible && (
       <form onSubmit={handleSubmit}>
         <div>
